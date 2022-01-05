@@ -1,0 +1,26 @@
+#Function to extract subset with cows from the left side
+def df_left_cows(file):
+    header_list = ["data_entity", "tag_id", "tag_string", "epoch_time", "x", "y", "z"]
+    df = pd.read_csv(file, names=header_list)
+    df = func.detect_drop_inactive_tags(df) #Drop inactive tags
+    left,right = func.left_right(df, '../data/barn.csv')   
+    return left
+
+#Function to extract subset with cows from the right side
+def df_right_cows(file):
+    header_list = ["data_entity", "tag_id", "tag_string", "epoch_time", "x", "y", "z"]
+    df = pd.read_csv(file, names=header_list)
+    df = func.detect_drop_inactive_tags(df) #Drop inactive tags
+    left,right = func.left_right(df, '../data/barn.csv')   
+    return right
+
+#Function to generate the aggregated files by every 0.5m
+def aggregated_dist_time(df):
+    edges = np.arange(df['distance'].min(), df['distance'].max(),50)
+    hist, bin_edges= np.histogram(df['distance'],bins=edges)
+    df['aggregated_distance'] = pd.Series(bin_edges)
+    df['total_time'] = pd.Series(hist)
+    df = df.dropna()
+    return df
+
+
