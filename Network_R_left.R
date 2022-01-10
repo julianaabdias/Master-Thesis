@@ -657,6 +657,14 @@ assortativity(net_30, V(net_30)$parity, directed = F)
 #continuous varialbes
 #assortativity(net_30, V(net_30)$parity)
 
+#3. Transitivity 
+transitivity(net_30, type = "global")
+#take the transitivity of the nodes that are first infected
+
+#get the neighbours of Cow 31
+net_30 %>% neighbors('31', mode = "out")
+
+
 ######################NETWORK VISUALIZATION####################
 
 #set seed for replicability purposes
@@ -664,57 +672,6 @@ set.seed(2021)
 
 ###1. Plot with degree centrality
 par(mfrow = c(1,2))
-
-#laygout: Fruchterman.reingold 
-plot(net_10,
-     #edge.color = 'black',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     vertex.size = V(net_10)$degree/1.8,
-     edge.width = sqrt(E(net_10)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.fruchterman.reingold,
-     margin = -0.3) 
-title("Social Network for 1.25 distance 
-      and at least 10min interaction",
-      cex.main=0.8,col.main="blue")
-
-
-plot(net_30,
-     edge.color = 'gray',
-     vertex.color = rainbow(7),
-     vertex.label = NA,
-     vertex.size = V(net_30)$degree/1.8,
-     edge.width = 0.1, #sqrt(E(net_30)$weight/500),
-     edge.arrow.size = 0.5,
-     layout = layout.fruchterman.reingold,
-     margin = -0.1) 
-title("Social Network for 1.25 distance and 
-      at least 30min interaction",
-      cex.main=0.5,col.main="black")
-
-#layout : graphopt
-plot(net_10,
-     #edge.color = 'black',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     vertex.size = V(net_10)$degree/3,
-     edge.width = sqrt(E(net_10)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.graphopt)  
-title("Social Network for 1.25 distance and at least 10min interaction",cex.main=0.8,col.main="blue")
-
-
-plot(net_30,
-     #edge.color = 'black',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     vertex.size = V(net_30)$degree/1.5,
-     edge.width = sqrt(E(net_30)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.graphopt)  
-title("Social Network for 1.25 distance and at least 30min interaction",cex.main=0.8,col.main="blue")
-
 
 #layout : kamada.kawai
 plot(net_30,
@@ -734,49 +691,23 @@ plot(net_30,
 ###2. Plot with eigenvector centrality
 
 #layout : kamada.kawai
-plot(net_10,
+#plot(net_30,
      #edge.color = 'black',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     vertex.size = V(net_10)$Eigen*10,
-     edge.width = sqrt(E(net_10)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.kamada.kawai,
-     margin = -0.3)
-title("Social Network for 1.25 distance and 
-      at least 10min interaction",
-      cex.main=0.6,col.main="blue")
-
-plot(net_30,
-     #edge.color = 'black',
-     vertex.color = V(net_30)$parity,
-     vertex.label = V(net_30)$parity,
-     vertex.size = V(net_30)$Eigen*10,
-     edge.width = sqrt(E(net_30)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.kamada.kawai,
-     margin = -0.2)
-title("Social Network for 1.25 distance and 
-      at least 30min interaction",
-      cex.main=0.6,col.main="blue")
+ #    vertex.color = rainbow(104),
+  #   vertex.label = NA,
+   #  vertex.size = V(net_10)$Eigen*10,
+    # edge.width = sqrt(E(net_10)$weight/1000),
+     #edge.arrow.size = 0.1,
+     #layout = layout.kamada.kawai,
+     #margin = -0.3)
+#title("Social Network for 1.25 distance and 
+ #     at least 10min interaction",
+  #    cex.main=0.6,col.main="blue")
 
 
 ###2. Plot with betweeness centrality
 
 #layout : kamada.kawai
-plot(net_10,
-     #edge.color = 'black',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     vertex.size = V(net_10)$betweeness/10,
-     edge.width = sqrt(E(net_10)$weight/1000),
-     edge.arrow.size = 0.1,
-     layout = layout.kamada.kawai,
-     margin = -0.3)
-title("Social Network for 1.25 distance and 
-      at least 10min interaction",
-      cex.main=0.6,col.main="blue")
-
 plot(net_30,
      edge.color = 'gray',
      vertex.color = rainbow(104),
@@ -990,33 +921,6 @@ title("Communities for 1.25 distance and
 modularity(louvain_30, membership, weights = net_30$weight)
 
 
-########continue here
-
-#hub and authorities
-hs <- hub_score(net_30)$vector
-as <- authority.score(net_30)$vector
-
-par(mfrow = c(1,2))
-
-set.seed(0910)
-
-plot(net_30,
-     vertex.size = hs*30,
-     main = 'Hubs',
-     vertex.color = hs,
-     vertex.label = NA,
-     edge.arrow.size = 0.1,
-     layout = layout.kamada.kawai)
-
-plot(net_30,
-     vertex.size = as*30,
-     main = 'authorities',
-     vertex.color = rainbow(104),
-     vertex.label = NA,
-     edge.arrow.size = 0.1,
-     layout = layout.kamada.kawai)
-
-
 ###RANDOM NETWORKS#####
 #Generate random graphs according to the Erdos-Renyi model
 #using G(n,m) graphs
@@ -1063,17 +967,13 @@ mean(assortativity)
 mean(cliques)
 mean(transitivity)
 
-
-#random <- erdos.renyi.game(104, 438, type= "gnm", directed = FALSE)
-#degree_distribution(random)
-
-
 ##### ERGM #######
 
 #transforming the igraph object into network object
-install.packages('intergraph')
+#install.packages('intergraph')
 library(intergraph)
-install.packages('lpSolve')
+library(ergm)
+#install.packages('lpSolve')
 
 # Creating the new network
 new_net <- intergraph::asNetwork(net_30)
@@ -1090,61 +990,65 @@ summary(model2)
 model3 <- ergm(new_net ~ edges + nodefactor("parity"))
 summary(model3)
 
-model4 <- ergm(new_net ~ edges + sociality('parity', base = 1, nodes = NULL))
-summary(model4)
-?sociality 
+#model4 <- ergm(new_net ~ edges + sociality('parity', base = 1, nodes = NULL))
+#summary(model4)
+#?sociality 
 
-model5 <- ergm(new_net ~ edges + nodemix('parity', base = NULL))
-summary(model5)
-
-
-
-#make the analysis for cliques adding parity 
+#model5 <- ergm(new_net ~ edges + nodemix('parity', base = NULL))
+#summary(model5)
 
 
-blocks <- cohesive.blocks(net_30)
-blocks(blocks)
-cohesion(blocks)
-plotHierarchy(blocks)
+#compute proportion of possible pairs with ties
+logit <- function(x) exp(x)/(1+exp(x))
+
+#input results from 1st model
+#left
+logit(-2.35)
+#right
+logit(-2.11)
+
+?ergm
+
+#input results from 2nd model
+#left
+x <- (-2.42 * 1) + (0.27*1)
+logit(x)
+#right
+x <- (-2.26 * 1) + (0.54*1)
+logit(x)
+
+#input results from 3rd model
+#left
+#left
+x <- (-2.51 * 1) + (0.28*2)
+logit(x)
+#right
+x <- (-1.95 * 1) + (-0.41*2)
+logit(x)
 
 
 ##OTHER COMMUNITY DETECTION ALGORITHMS
-communityMulti <- multilevel.community(net_30) 
-length(communityMulti)
+#communityMulti <- multilevel.community(net_30) 
+#length(communityMulti)
 
-optimal <- optimal.community(net_30)
-length(optimal)
+#optimal <- optimal.community(net_30)
+#length(optimal)
 
 
-Infomap <- infomap.community(net_30)
-length(Infomap)
+#Infomap <- infomap.community(net_30)
+#length(Infomap)
 
-walktrap <- walktrap.community(net_30)
-length(walktrap)
+#walktrap <- walktrap.community(net_30)
+#length(walktrap)
 
-edge_betweeness <- edge.betweenness.community(net_30)
-length(edge_betweeness)
+#edge_betweeness <- edge.betweenness.community(net_30)
+#length(edge_betweeness)
 
-label_propgation <- label.propagation.community(net_30)
-length(label_propgation)
+#label_propgation <- label.propagation.community(net_30)
+#length(label_propgation)
 
-leading_eigenvector <- leading.eigenvector.community(net_30)
-length(leading_eigenvector)
+#leading_eigenvector <- leading.eigenvector.community(net_30)
+#length(leading_eigenvector)
 
-#make a graph correlation between degree centrality and parity
 
-transitivity(net_30, type = "global")
-#take the transitivity of the nodes that are first infected
-#get the neighbours of Cow 31
-net_30 %>% neighbors('31', mode = "out")
 
-#subgroup cohesion
-cohesion(net_30)
-graph.cohesion(net_30)
-
-#ERGM
-
-#Extra material
-
-#plot parity frequency (both left and right)
-#first create a dataframe with both info, then make a plot
